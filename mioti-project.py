@@ -70,3 +70,41 @@ fig_bar = px.bar(
     title=f"Distritos ordenados por {var_ranking}"
 )
 st.plotly_chart(fig_bar, use_container_width=True)
+
+
+st.markdown("---")
+st.subheader("📊 mapa de Calor: Correlaciones Globales")
+st.markdown("Los tonos azules/verdes indican relación positiva fuerte, los rojos relación negativa.")
+
+# Seleccionamos solo las columnas numéricas clave para no saturar
+columnas_corr = ['n_diagnostico', 'pct_diagnostico', 'intensidad_media', 'cobertura_media', 'pct_cumple_300m', 'puntos_media']
+matriz_corr = df[columnas_corr].corr(method='spearman')
+
+fig_heatmap = px.imshow(
+    matriz_corr,
+    text_auto=".2f", # Muestra los números dentro de los cuadrados
+    color_continuous_scale='RdBu', # Escala de rojo a azul
+    zmin=-1, zmax=1,
+    title="Matriz de correlación de Spearman entre variables ambientales y de salud"
+)
+st.plotly_chart(fig_heatmap, use_container_width=True)
+
+
+
+st.markdown("---")
+st.subheader("🔮 Análisis Avanzado Multivariable")
+
+fig_bubble = px.scatter(
+    df, 
+    x="cobertura_media", 
+    y="pct_diagnostico",
+    size="n_individuos",  # El tamaño de la burbuja depende de la población analizada
+    color="DISTRITO",
+    hover_name="DISTRITO",
+    log_x=False, 
+    size_max=30,
+    title="Relación Cobertura Verde vs % Diagnósticos (Tamaño = Población del Distrito)"
+)
+st.plotly_chart(fig_bubble, use_container_width=True)
+
+
