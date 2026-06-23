@@ -94,17 +94,20 @@ st.plotly_chart(fig_heatmap, use_container_width=True)
 st.markdown("---")
 st.subheader("🔮 Análisis Avanzado Multivariable")
 
-fig_bubble = px.scatter(
-    df, 
-    x="cobertura_media", 
-    y="pct_diagnostico",
-    size="n_individuos",  # El tamaño de la burbuja depende de la población analizada
-    color="DISTRITO",
-    hover_name="DISTRITO",
-    log_x=False, 
-    size_max=30,
-    title="Relación Cobertura Verde vs % Diagnósticos (Tamaño = Población del Distrito)"
-)
-st.plotly_chart(fig_bubble, use_container_width=True)
+import plotly.express as px
 
+fig = px.scatter(
+    df_ols,  # O la tabla maestra que estés usando
+    x="cobertura_media",
+    y="pct_diagnostico",
+    color="DISTRITO",
+    size="n_individuos",  # <--- ¡ESTA ES LA LÍNEA QUE FALTA!
+    size_max=30,  # Controla el tamaño máximo de la burbuja más grande
+    title="Relación Cobertura Verde vs % Diagnósticos (Tamaño = Población del Distrito)",
+    labels={
+        "cobertura_media": "Cobertura Verde Media (%)",
+        "pct_diagnostico": "Prevalencia de Diagnósticos (%)",
+    },
+)
+fig.show()
 
