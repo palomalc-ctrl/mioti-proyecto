@@ -94,20 +94,21 @@ st.plotly_chart(fig_heatmap, use_container_width=True)
 st.markdown("---")
 st.subheader("🔮 Análisis Avanzado Multivariable")
 
-import plotly.express as px
+# Nota: Ya importaste plotly.express arriba como px, no hace falta duplicar el import aquí
 
 fig = px.scatter(
-    df_ols,  # O la tabla maestra que estés usando
+    df,  # 🌟 ¡CORREGIDO! Cambiado df_ols por df, que es tu variable real
     x="cobertura_media",
     y="pct_diagnostico",
     color="DISTRITO",
-    size="n_individuos",  # <--- ¡ESTA ES LA LÍNEA QUE FALTA!
-    size_max=30,  # Controla el tamaño máximo de la burbuja más grande
+    size="n_individuos",  # 🌟 Asegúrate de que esta columna exacta exista en tu CSV
+    size_max=30,  
     title="Relación Cobertura Verde vs % Diagnósticos (Tamaño = Población del Distrito)",
     labels={
         "cobertura_media": "Cobertura Verde Media (%)",
         "pct_diagnostico": "Prevalencia de Diagnósticos (%)",
     },
 )
-fig.show()
 
+# 🌟 ¡CORREGIDO! Cambiado fig.show() por el renderizador nativo de Streamlit
+st.plotly_chart(fig, use_container_width=True)
