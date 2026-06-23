@@ -50,3 +50,23 @@ col3.metric("Correlación ρ", f"{rho:.2f}")
 # 6. Tabla de datos
 with st.expander("Ver tabla de datos completa"):
     st.dataframe(df)
+
+
+
+st.markdown("---")
+st.subheader("🏆 Comparativa y Rankings por Distrito")
+
+# Permitir al usuario elegir qué ordenar
+var_ranking = st.selectbox("Selecciona la variable para ordenar el ranking:", columnas, index=columnas.index('cobertura_media'))
+
+# Crear el gráfico ordenando los datos de mayor a menor
+df_sorted = df.sort_values(by=var_ranking, ascending=False)
+fig_bar = px.bar(
+    df_sorted, 
+    x='DISTRITO', 
+    y=var_ranking, 
+    color=var_ranking,
+    color_continuous_scale="Viridis",
+    title=f"Distritos ordenados por {var_ranking}"
+)
+st.plotly_chart(fig_bar, use_container_width=True)
