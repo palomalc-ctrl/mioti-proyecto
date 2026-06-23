@@ -34,20 +34,32 @@ y_axis = st.sidebar.selectbox("Variable Eje Y (Salud):", columnas, index=columna
 
 # 🌟 ¡NUEVO! Selector interactivo para el tamaño de las burbujas
 size_axis = st.sidebar.selectbox("Variable Tamaño (Burbujas):", columnas, index=columnas.index('n_diagnostico'))
+
+
+
 # 4. Gráfico principal
 st.subheader(f"Correlación: {x_axis} vs {y_axis}")
 
-# Cálculo de correlación
+# Cálculo de correlación de Spearman
 rho, p_val = spearmanr(df[x_axis], df[y_axis])
 
 fig = px.scatter(
-    df, x=x_axis, y=y_axis, 
+    df, 
+    x=x_axis, 
+    y=y_axis, 
     color='DISTRITO', 
     hover_data=['DISTRITO'],
-    trendline="ols",
+    trendline="ols",                # Activa el cálculo de la línea de tendencia
+    trendline_scope="overall",      # 🌟 ¡EL TRUCO CRÍTICO! Dibuja una sola línea global para todos los puntos
+    trendline_color_override="red", # 🌟 Opcional: Pinta la línea de rojo para que resalte frente al azul
     title=f"Correlación de Spearman: {rho:.2f} (p-valor: {p_val:.3f})"
 )
+
+# Ajustes visuales para que la línea de tendencia no se rompa por el texto de los distritos
+fig.update_layout(showlegend=True)
+
 st.plotly_chart(fig, use_container_width=True)
+
 
 # 5. Métricas Resumen (KPIs)
 st.markdown("---")
