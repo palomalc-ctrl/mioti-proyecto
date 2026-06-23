@@ -18,13 +18,22 @@ def load_data():
 
 df = load_data()
 
+# 2. Carga de datos
+@st.cache_data
+def load_data():
+    return pd.read_csv("tabla_distritos_verde_salud.csv")
+
+df = load_data()
+df['DISTRITO'] = df['DISTRITO'].astype(str) # 🌟 ¡NUEVO! Corrige el gradiente de color a colores únicos
+
 # 3. Sidebar: Configuración y Filtros
 st.sidebar.header("Configuración del Gráfico")
-# Seleccionamos las columnas detectadas automáticamente
 columnas = df.columns.tolist()
 x_axis = st.sidebar.selectbox("Variable Eje X (Entorno):", columnas, index=columnas.index('intensidad_media'))
 y_axis = st.sidebar.selectbox("Variable Eje Y (Salud):", columnas, index=columnas.index('n_diagnostico'))
 
+# 🌟 ¡NUEVO! Selector interactivo para el tamaño de las burbujas
+size_axis = st.sidebar.selectbox("Variable Tamaño (Burbujas):", columnas, index=columnas.index('n_diagnostico'))
 # 4. Gráfico principal
 st.subheader(f"Correlación: {x_axis} vs {y_axis}")
 
@@ -94,21 +103,18 @@ st.plotly_chart(fig_heatmap, use_container_width=True)
 st.markdown("---")
 st.subheader("🔮 Análisis Avanzado Multivariable")
 
-# Nota: Ya importaste plotly.express arriba como px, no hace falta duplicar el import aquí
-
 fig = px.scatter(
-    df,  # 🌟 ¡CORREGIDO! Cambiado df_ols por df, que es tu variable real
+    df,  # 🌟 Tu tabla real
     x="cobertura_media",
     y="pct_diagnostico",
     color="DISTRITO",
-    size="n_individuos",  # 🌟 Asegúrate de que esta columna exacta exista en tu CSV
+    size=size_axis,  # 🌟 ¡CORREGIDO! Ahora el tamaño cambia dinámicamente con la columna elegida
     size_max=30,  
-    title="Relación Cobertura Verde vs % Diagnósticos (Tamaño = Población del Distrito)",
+    title="Relación Cobertura Verde vs % Diagnósticos (Tamaño Variable)",
     labels={
         "cobertura_media": "Cobertura Verde Media (%)",
         "pct_diagnostico": "Prevalencia de Diagnósticos (%)",
     },
 )
 
-# 🌟 ¡CORREGIDO! Cambiado fig.show() por el renderizador nativo de Streamlit
 st.plotly_chart(fig, use_container_width=True)
